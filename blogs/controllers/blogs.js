@@ -5,6 +5,12 @@ blogsRouter.get('/', async (request, response) => {
     const blogs = await Blog.find({})
     response.json(blogs)
 })
+
+blogsRouter.delete('/:id', async (request, response) => {
+  const deleted = await Blog.findByIdAndDelete(request.params.id)
+  console.log('deleted ',deleted)
+  response.status(204).end()
+})
   
 blogsRouter.post('/', async (request, response) => {
     const keys = Object.keys(request.body)
