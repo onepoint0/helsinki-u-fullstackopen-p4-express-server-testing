@@ -1,6 +1,9 @@
 GET http://localhost:3003/api/blogs
 
 ###
+GET http://localhost:3003/api/blogs/66333356ad7519f9cb6ba80c
+
+###
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
@@ -9,3 +12,18 @@ Content-Type: application/json
   ,"author": "betty"
   ,"url": "http:/asfasdf"
 }
+
+###
+PUT http://localhost:3003/api/blogs/66332947a8aef3a975526403
+Content-Type: application/json
+
+{
+  "title": "TESTING UPDATE IN PUT REQUEST"
+  ,"author": "betty"
+  ,"url": "http:/asfasdf"
+}
+
+###
+DELETE http://localhost:3003/api/blogs/663326142efbb5d1f6a12a00
+
+

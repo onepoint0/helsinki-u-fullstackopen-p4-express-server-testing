@@ -4,13 +4,16 @@ const supertest = require('supertest')
 const mongoose = require('mongoose')
 const app = require('../app')
 const Blog = require('../models/blogs')
-const {initialBlogs} = require('./test_helper')
+const { initialBlogs, blogsInDb } = require('./test_helper')
 
 const api = supertest(app)
 
 const rootUrl = '/api/blogs'
 
+// RUN ONLY TESTS: npm test -- --test-only
+
 beforeEach( async () => {
+    // https://fullstackopen.com/en/part4/testing_the_backend#optimizing-the-before-each-function
     await Blog.deleteMany({})
 
     const blogObjects = initialBlogs.map( blog => new Blog(blog))
@@ -32,6 +35,7 @@ test('blogs list has right number of blogs ', async () => {
 })
 
 test('Unique identifier key name is "id" ', async()=> {
+// test.only('Unique identifier key name is "id" ', async()=> {
     const blogs = await api
         .get(rootUrl)
         .expect(200)
@@ -63,10 +67,10 @@ test('Post request correctly adds blog to the database ', async () => {
     // console.log('init blogs = ',initialBlogs.body)
     // console.log('new blogs = ',newBlogs.body)
 
-    const blogTitles = newBlogs.body.map( b => b.title )
+    const blogs = newBlogs.body.map( b => b.title + '#' + b.author + '#' + b.url + '#' + b.likes)
 
     assert.strictEqual(initialBlogs.length, newBlogs.body.length-1)
-    assert(blogTitles.includes(newBlog.title))
+    assert(blogs.includes(newBlog.title + '#' + newBlog.author + '#' + newBlog.url + '#' + newBlog.likes))
 
 })
 
@@ -87,7 +91,7 @@ test('like property defaults to zero when not sent ', async () => {
     assert.strictEqual( response.body?.likes, 0)
 })
 
-test('empty title returns 404', async () => {
+test('empty title returns 400', async () => {
 // test.only('empty title returns 400', async () => {
     const newBlog = {
         author:  "clario",
@@ -102,7 +106,7 @@ test('empty title returns 404', async () => {
 
 })
 
-// test.only('empty url returns 400', async () => {
+//test.only('empty url returns 400', async () => {
 test('empty url returns 400', async () => {
     const newBlog = {
         author:  "clario",
@@ -114,6 +118,51 @@ test('empty url returns 400', async () => {
         .post(rootUrl)
         .send(newBlog)
         .expect(400)
+
+})
+
+test('blog post is successfully removed on delete request', async () => {
+// test.only('blog post is successfully removed on delete request', async () => {
+ 
+    const currblogs = await blogsInDb();
+
+    await api
+        .delete(`${rootUrl}/${currblogs[0].id}`)
+        .expect(204)
+
+    await api
+        .get(`${rootUrl}/${currblogs[0].id}`)
+        .expect(404)
+
+})
+
+test.only('blog post is successfully updated on put request', async () => {
+// test('blog post is successfully updated on delete request', async () => {
+    const currblogs = await blogsInDb();
+
+    const id = currblogs[0].id;
+
+    const updated = {
+        title: currblogs[0].title + 'Updated',
+        author: currblogs[0].author + 'Updated',
+        url: currblogs[0].url + 'Updated',
+        likes: currblogs[0].likes + 5,
+        }
+
+    await api
+        .put(`${rootUrl}/${id}`)
+        .send(updated)
+        .expect(200)
+
+    await api
+        .get(`${rootUrl}/${id}`)
+        .expect(200,{
+            title:  updated.title,
+            author: updated.author,
+            url:    updated.url,
+            likes:  updated.likes,
+            id:     id
+        })
 
 })
 
