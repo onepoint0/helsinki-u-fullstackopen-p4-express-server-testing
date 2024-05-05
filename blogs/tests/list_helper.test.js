@@ -74,13 +74,13 @@ test('dummy returns one', () => {
   assert.strictEqual(result, 1)
 })
 
-describe('total likes',() => {
+describe.only('total likes',() => {
     test('of empty list is zero',() => {
         assert.strictEqual(listHelper.totalLikes(emptyBlogList),0)
     })
 
-    test('when list has only one blog, equals the likes of that',() => {
-        assert.strictEqual(listHelper.totalLikes(listWithOneBlog),5)
+    test.only('when list has only one blog, equals the likes of that',() => {
+        assert.strictEqual(listHelper.totalLikes(listWithOneBlog),listWithOneBlog[0].likes)
     })
 
     test('of a bigger list is calculated right',() => {
@@ -112,4 +112,15 @@ describe('most blogs',() => {
       assert.deepStrictEqual(listHelper.mostBlogs(blogs),mostBlogs)
   })
 
+})
+
+describe('most likes ',() => {
+  const mostLikes = {
+    author: 'Edsger W. Dijkstra', 
+    likes: 17
+  }
+
+  test('is ',() => {
+    assert.deepStrictEqual(listHelper.mostLikes(blogs),mostLikes)
+  })
 })
