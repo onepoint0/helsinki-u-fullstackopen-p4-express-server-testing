@@ -144,8 +144,8 @@ describe.only('When creating blogs ', () => {
 
     })
 
-    // test('blog post is successfully removed on delete request', async () => {
-    test.only('blog post is successfully removed on delete request', async () => {
+    test('blog post is successfully removed on delete request', async () => {
+    // test.only('blog post is successfully removed on delete request', async () => {
 
         // need to create new blog here with current user because blog can only be deleted by owner
         const newBlog = {
@@ -173,8 +173,8 @@ describe.only('When creating blogs ', () => {
 
     })
 
-    // test.only('blog post is successfully updated on put request', async () => {
-    test('blog post is successfully updated on put request', async () => {
+    test.only('blog post is successfully updated on put request', async () => {
+    // test('blog post is successfully updated on put request', async () => {
         const currblogs = await blogsInDb();
 
         const id = currblogs[0].id;

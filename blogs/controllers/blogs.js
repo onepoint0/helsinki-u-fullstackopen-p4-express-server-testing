@@ -1,5 +1,6 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blogs')
+const User = require('../models/users')
 
 blogsRouter.get('/', async (request, response) => {
     const blogs = await Blog.find({}).populate('user',{blogs: 0})
@@ -42,6 +43,8 @@ blogsRouter.post('/', async (request, response) => {
 
   if (!request.user) return response.status(401).json({error: 'Invalid token'})
 
+  const user = await User.findById(request.user)
+
   const keys = Object.keys(request.body)
 
   if (!keys.includes('likes')) {
@@ -63,11 +66,11 @@ blogsRouter.post('/', async (request, response) => {
 
   // console.log('new blog - ',blog)
 
-  await blog
-    .save()
-    .then(result => {
-      response.status(201).json(result)
-    })
+  const savedBlog = await blog.save()
+  console.log('user blogs = ',user.blogs,savedBlog._id)
+  user.blogs = user.blogs.concat(savedBlog._id)  
+  user.save()
+  response.status(201).json(savedBlog)
 })
 
 blogsRouter.put('/:id', async (request, response) => {
@@ -80,12 +83,10 @@ blogsRouter.put('/:id', async (request, response) => {
     likes: body.likes
   }
 
-  Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
-    .then(updatedBlog => {
-      response.json(updatedBlog)
-    })
-    // .catch(error => next(error))
+  const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
 
-  })
+  response.status(200).json(updatedBlog)
+
+})
 
 module.exports = blogsRouter
