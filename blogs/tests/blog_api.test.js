@@ -70,8 +70,8 @@ describe.only('When creating blogs ', () => {
         assert(keys.includes('id') && ! keys.includes('_id'))
     })
 
-    // test('Post request correctly adds blog to the database ', async () => {
-    test.only('Post request correctly adds blog to the database ', async () => {
+    test('Post request correctly adds blog to the database ', async () => {
+    // test.only('Post request correctly adds blog to the database ', async () => {
 
         const newBlog = {
             title:   "Test blogs are correctly added to the database",
@@ -94,8 +94,8 @@ describe.only('When creating blogs ', () => {
 
     })
 
-    test.only('likes property defaults to zero when not sent ', async () => {
-    // test('likes property defaults to zero when not sent ', async () => {
+    // test.only('likes property defaults to zero when not sent ', async () => {
+    test('likes property defaults to zero when not sent ', async () => {
         const newBlog = {
             title:   "A new blog!",
             author:  "clario",
@@ -107,7 +107,7 @@ describe.only('When creating blogs ', () => {
             .set('Authorization',`Bearer ${auth}`)
             .send(newBlog)
 
-        // console.log('PROPERTY DEFAULTS TO ZERO: ',response._body)
+        // console.log('PROPERTY DEFAULTS TO ZERO: ',response.body)
 
         assert.strictEqual( response.body?.likes, 0)
     })
@@ -144,19 +144,8 @@ describe.only('When creating blogs ', () => {
 
     })
 
-    test.only('blog cannot be deleted without passing auth header', async () => {
-        const toDelete = await Blog.find({}).limit(1)
-
-        const res = await api
-            .delete(`${blogUrl}/${toDelete[0]._id}`)
-            .expect(401)
-
-        assert.strictEqual(JSON.parse(res.error.text).error, 'Sorry, you are not permitted to delete this blog.')
-        
-    })
-
-    test('blog post is successfully removed on delete request', async () => {
-    // test.only('blog post is successfully removed on delete request', async () => {
+    // test('blog post is successfully removed on delete request', async () => {
+    test.only('blog post is successfully removed on delete request', async () => {
 
         // need to create new blog here with current user because blog can only be deleted by owner
         const newBlog = {
@@ -171,7 +160,7 @@ describe.only('When creating blogs ', () => {
             .send(newBlog)
             .set('Authorization',`Bearer ${auth}`)
             .expect(201))
-            ._body.id
+            .body.id
 
         await api
             .delete(`${blogUrl}/${newBlogID}`)
@@ -195,7 +184,7 @@ describe.only('When creating blogs ', () => {
             author: currblogs[0].author + 'Updated',
             url: currblogs[0].url + 'Updated',
             likes: currblogs[0].likes + 5,
-            }
+        }
 
         await api
             .put(`${blogUrl}/${id}`)
@@ -214,6 +203,17 @@ describe.only('When creating blogs ', () => {
 
     }) 
 
+    test('blog cannot be deleted without passing auth header', async () => {
+        // test.only('blog cannot be deleted without passing auth header', async () => {
+                const toDelete = await Blog.find({}).limit(1)
+    
+            const res = await api
+                .delete(`${blogUrl}/${toDelete[0]._id}`)
+                .expect(401)
+    
+            assert.strictEqual(JSON.parse(res.error.text).error, 'Sorry, you are not permitted to delete this blog.')
+            
+        })
 })
 
 describe('When a user is created', () => {
