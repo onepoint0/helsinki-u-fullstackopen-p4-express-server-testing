@@ -205,7 +205,7 @@ describe.only('When creating blogs ', () => {
 
     test('blog cannot be deleted without passing auth header', async () => {
         // test.only('blog cannot be deleted without passing auth header', async () => {
-                const toDelete = await Blog.find({}).limit(1)
+            const toDelete = await Blog.find({}).limit(1)
     
             const res = await api
                 .delete(`${blogUrl}/${toDelete[0]._id}`)
