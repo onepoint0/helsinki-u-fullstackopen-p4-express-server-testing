@@ -5,7 +5,6 @@ const tokenExtractor = (request,response,next) => {
   const auth = request.get('Authorization')
 
   if ( auth && auth.startsWith('Bearer')) request.token = auth.replace('Bearer ','')
-  // console.log('request token header ',request.token)
 
   next()
 }
