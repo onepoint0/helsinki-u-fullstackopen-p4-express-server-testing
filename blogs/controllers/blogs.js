@@ -76,14 +76,14 @@ blogsRouter.post('/', async (request, response) => {
 
 blogsRouter.put('/:id', async (request, response) => {
   const body = request.body
-  console.log('blog put req ',request.body)
+
   const blog = {
     title: body.title,
     author: body.author,
     url: body.url,
     likes: body.likes
   }
-console.log('blog object ',blog)
+
   const updatedBlog = await Blog.findByIdAndUpdate(new mongoose.Types.ObjectId(request.params.id), blog, { new: true })
 
   response.status(200).json(updatedBlog)
